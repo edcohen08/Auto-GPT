@@ -13,6 +13,8 @@ from image_gen import generate_image
 from duckduckgo_search import ddg
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import git
+import subprocess
 
 cfg = Config()
 
@@ -63,6 +65,12 @@ def execute_command(command_name, arguments):
                 return google_official_search(arguments["input"])
             else:
                 return google_search(arguments["input"])
+        elif command_name == "clone_repository":
+            if not cfg.github_api_key:
+                return "No Github api key provided, please add it to your environment."
+            return clone_repository(arguments["repo_url"], arguments["clone_path"])
+        elif command_name == "execute_command_list":
+            return execute_command_list(arguments["commands"])
         elif command_name == "memory_add":
             return memory.add(arguments["string"])
         elif command_name == "start_agent":
@@ -165,6 +173,24 @@ def google_official_search(query, num_results=8):
 
     # Return the list of search result URLs
     return search_results_links
+
+def clone_repository(repo_url, clone_path):
+    """Clone a github repository locally"""
+    git.Repo.clone_from(repo_url, clone_path)
+    result = f"""Cloned {repo_url} to {clone_path}"""
+
+    return result
+
+def execute_command_list(commands):
+    full_command = ' && '.join(commands)
+    command_result = subprocess.run(full_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
+    result = f"""Executed commands {','.join(commands)} with """
+    if command_result.returncode == 0:
+        result += f"""Output: {command_result.stdout}"""
+    else:
+        result += f"""Error: {command_result.stderr}"""
+    
+    return result
 
 def browse_website(url, question):
     """Browse a website and return the summary and links"""
