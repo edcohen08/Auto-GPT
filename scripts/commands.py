@@ -70,7 +70,7 @@ def execute_command(command_name, arguments):
                 return "No Github api key provided, please add it to your environment."
             return clone_repository(arguments["repo_url"], arguments["clone_path"])
         elif command_name == "execute_command_list":
-            return execute_command_list(arguments["commands"])
+            return execute_command_list(arguments["commands"], arguments["cwd"])
         elif command_name == "memory_add":
             return memory.add(arguments["string"])
         elif command_name == "start_agent":
@@ -181,10 +181,10 @@ def clone_repository(repo_url, clone_path):
 
     return result
 
-def execute_command_list(commands):
+def execute_command_list(commands, cwd):
     full_command = ' && '.join(commands)
-    command_result = subprocess.run(full_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
-    result = f"""Executed commands {','.join(commands)} with """
+    command_result = subprocess.run(full_command, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
+    result = f"""Executed commands with """
     if command_result.returncode == 0:
         result += f"""Output: {command_result.stdout}"""
     else:

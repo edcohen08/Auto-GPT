@@ -23,7 +23,9 @@ def safe_join(base, *paths):
 def read_file(filename):
     """Read a file and return the contents"""
     try:
-        filepath = safe_join(working_directory, filename)
+        filepath = filename
+        if working_directory not in filepath:
+            filepath = safe_join(working_directory, filename)
         with open(filepath, "r", encoding='utf-8') as f:
             content = f.read()
         return content
@@ -34,6 +36,9 @@ def read_file(filename):
 def write_to_file(filename, text):
     """Write text to a file"""
     try:
+        filepath = filename
+        if working_directory not in filepath:
+            filepath = safe_join(working_directory, filename)
         filepath = safe_join(working_directory, filename)
         directory = os.path.dirname(filepath)
         if not os.path.exists(directory):
