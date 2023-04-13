@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  autogpt:
+    build: .
+    container_name: auto-gpt
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: redis-stack-server
+    ports:
+      - "6379:6379"
