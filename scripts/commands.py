@@ -176,7 +176,9 @@ def google_official_search(query, num_results=8):
 
 def clone_repository(repo_url, clone_path):
     """Clone a github repository locally"""
-    git.Repo.clone_from(repo_url, clone_path)
+    split_url = repo_url.split("//")
+    auth_repo_url = f"//{cfg.github_username}:{cfg.github_api_key}@".join(split_url)
+    git.Repo.clone_from(auth_repo_url, clone_path)
     result = f"""Cloned {repo_url} to {clone_path}"""
 
     return result

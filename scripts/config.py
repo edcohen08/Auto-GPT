@@ -63,6 +63,7 @@ class Config(metaclass=Singleton):
         self.use_mac_os_tts = os.getenv("USE_MAC_OS_TTS")
 
         self.github_api_key = os.getenv("GITHUB_API_KEY")
+        self.github_username = os.getenv("GITHUB_USERNAME")
         
         self.google_api_key = os.getenv("GOOGLE_API_KEY")
         self.custom_search_engine_id = os.getenv("CUSTOM_SEARCH_ENGINE_ID")
